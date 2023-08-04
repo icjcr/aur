@@ -1,0 +1,28 @@
+# Maintainer: Iulian Cojocaru <icjcr@tiscali.it>
+pkgname=gps
+pkgver=6.8.0
+pkgrel=1
+pkgdesc="Rust implementation of git-ps for the Git Patch Stack workflow"
+arch=('any')
+url="https://git-ps.sh/"
+license=('MIT')
+
+_name=git-ps-rs
+
+makedepends=('cargo' 'gpgme')
+source=("${pkgver}.tar.gz::https://github.com/uptech/git-ps-rs/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('572eb39465a9412dd0944272f2003e32ee7eb751bede26ad1fdef13e2e220216')
+
+build() {
+  cd "${_name}-${pkgver}"
+  cargo build --release
+}
+
+package() {
+  cd "${_name}-${pkgver}"
+  install -Dm0755 target/release/gps "${pkgdir}/usr/bin/gps"
+
+  install -Dm0644 target/release/build/gps-*/out/gps.bash "${pkgdir}/usr/share/bash-completion/completions/gps.bash"
+  install -Dm0644 target/release/build/gps-*/out/_gps "${pkgdir}/usr/share/zsh/site-functions/_gps"
+}
+
